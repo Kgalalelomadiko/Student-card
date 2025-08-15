@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+
+{% block title %}Add Transaction - Budget Tracker{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0">
+                    <i class="fas fa-plus-circle me-2"></i>Add New Transaction
+                </h4>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('add_transaction') }}" id="transactionForm">
+                    <!-- Transaction Type -->
+                    <div class="mb-3">
+                        <label for="type" class="form-label">
+                            <i class="fas fa-exchange-alt me-1"></i>Transaction Type
+                        </label>
+                        <select class="form-select" id="type" name="type" required>
+                            <option value="">Choose transaction type...</option>
+                            <option value="income">
+                                <i class="fas fa-arrow-up"></i>Income
+                            </option>
+                            <option value="expense">
+                                <i class="fas fa-arrow-down"></i>Expense
+                            </option>
+                        </select>
+                    </div>
+
+                    <!-- Description -->
+                    <div class="mb-3">
+                        <label for="description" class="form-label">
+                            <i class="fas fa-align-left me-1"></i>Description
+                        </label>
+                        <input type="text" 
+                               class="form-control" 
+                               id="description" 
+                               name="description" 
+                               placeholder="Enter transaction description..."
+                               required
+                               maxlength="100">
+                        <div class="form-text">Brief description of the transaction</div>
+                    </div>
+
+                    <!-- Amount -->
+                    <div class="mb-3">
+                        <label for="amount" class="form-label">
+                            <i class="fas fa-dollar-sign me-1"></i>Amount
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text">$</span>
+                            <input type="number" 
+                                   class="form-control" 
+                                   id="amount" 
+                                   name="amount" 
+                                   placeholder="0.00"
+                                   step="0.01"
+                                   min="0.01"
+                                   required>
+                        </div>
+                        <div class="form-text">Enter amount in dollars</div>
+                    </div>
+
+                    <!-- Category -->
+                    <div class="mb-3">
+                        <label for="category" class="form-label">
+                            <i class="fas fa-tags me-1"></i>Category
+                        </label>
+                        <select class="form-select" id="category" name="category" required>
+                            <option value="">Choose a category...</option>
+                            {% for category in categories %}
+                                <option value="{{ category }}">{{ category }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <!-- Date -->
+                    <div class="mb-4">
+                        <label for="date" class="form-label">
+                            <i class="fas fa-calendar me-1"></i>Date
+                        </label>
+                        <input type="date" 
+                               class="form-control" 
+                               id="date" 
+                               name="date" 
+                               required>
+                        <div class="form-text">When did this transaction occur?</div>
+                    </div>
+
+                    <!-- Form Actions -->
+                    <div class="d-flex justify-content-between">
+                        <a href="{{ url_for('index') }}" class="btn btn-secondary">
+                            <i class="fas fa-times me-1"></i>Cancel
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-1"></i>Add Transaction
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Set today's date as default
+document.getElementById('date').valueAsDate = new Date();
+
+// Form validation feedback
+document.getElementById('transactionForm').addEventListener('submit', function(e) {
+    const type = document.getElementById('type').value;
+    const description = document.getElementById('description').value.trim();
+    const amount = parseFloat(document.getElementById('amount').value);
+    const category = document.getElementById('category').value;
+    const date = document.getElementById('date').value;
+
+    if (!type || !description || !amount || !category || !date) {
+        e.preventDefault();
+        alert('Please fill in all required fields.');
+        return false;
+    }
+
+    if (amount <= 0) {
+        e.preventDefault();
+        alert('Amount must be greater than 0.');
+        return false;
+    }
+
+    return true;
+});
+</script>
+{% endblock %}
